@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  fluent-bit:
+    image: fluent/fluent-bit
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    depends_on:
+      - minio
+    environment:
+      - "AWS_ACCESS_KEY_ID=sample-user-name"
+      - "AWS_SECRET_ACCESS_KEY=sample-root-password"
+  minio:
+    image: minio/minio
+    volumes:
+      - ./minio-data:/data
+    environment:
+      - "MINIO_ROOT_USER=sample-user-name"
+      - "MINIO_ROOT_PASSWORD=sample-root-password"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
